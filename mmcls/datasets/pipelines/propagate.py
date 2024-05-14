@@ -13,6 +13,7 @@ from skimage.util.noise import random_noise
 from torch import nn
 from scipy import ndimage
 import copy
+import random
 
 class AddNoise:
     def __init__(self, snr, noise_type, noise_mean, dtype):
@@ -121,6 +122,8 @@ class Propagated(object):
         self.use_cuda = use_cuda
         self.keys = keys    
         self.object_height = object_height
+        #TODO:temp
+        self.object_height = random.uniform(0.4, 0.6)
         self.input_dim = np.array(input_dim[:2])
         sensor_param = sensor_dict[sensor]
         sensor_size = sensor_param[SensorParam.SIZE]
@@ -227,9 +230,21 @@ class Propagated(object):
             transform_list.append(
                 transforms.Resize(size=tuple(object_dim))
             )
+            # resize and pad to make sure we have the right width and height ratio with the original image
+            scaling =  min(self.conv_dim[0]/ self.input_dim[0], self.conv_dim[1]/ self.input_dim[1])
+            resize_dim = (int(self.input_dim[0]*scaling), int(self.input_dim[1]*scaling))
+            # print("resize dim:", resize_dim)
             transform_list_no_pad.append(
-                transforms.Resize(size=tuple(self.conv_dim[:2]))
+                transforms.Resize(size=resize_dim)
             )
+            padding = self.conv_dim[:2] - resize_dim
+            left = padding[1] // 2
+            right = padding[1] - left
+            top = padding[0] // 2
+            bottom = padding[0] - top
+            # print("padding:", (left, top, right, bottom))
+            transform_list_no_pad.append(transforms.Pad(padding=(left, top, right, bottom)))
+            
             # -- pad rest with zeros
             padding = self.conv_dim[:2] - object_dim
             # print(self.conv_dim)

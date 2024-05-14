@@ -11,5 +11,8 @@ from .lfw import LFW
 from .celeb import Celeb
 from .flatface import FlatFace
 from .ms1m import MS1MDataset
-__all__ = ['BaseDataset', 'CustomDataset', 'RepeatDataset', 'ConcatDataset','ClassBalancedDataset', 'build_dataloader', 'build_dataset', 'build_sampler', 'DATASETS', 'PIPELINES', 'SAMPLERS', 'DistributedSampler', 'RepeatAugSampler', 'LFW', 'Celeb', 'FlatFace', 'MS1MDataset', 'KFoldDataset']
+from .rafdb import RafDB
+from .affectnet import AffectNet
+from .mxface_dataset import MXFaceDataset
+__all__ = ['BaseDataset', 'CustomDataset', 'RepeatDataset', 'ConcatDataset','ClassBalancedDataset', 'build_dataloader', 'build_dataset', 'build_sampler', 'DATASETS', 'PIPELINES', 'SAMPLERS', 'DistributedSampler', 'RepeatAugSampler', 'LFW', 'Celeb', 'FlatFace', 'MS1MDataset', 'KFoldDataset', 'RafDB', 'AffectNet', 'MXFaceDataset']
     

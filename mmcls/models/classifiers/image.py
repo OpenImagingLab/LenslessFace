@@ -262,8 +262,8 @@ class AffineFaceImageClassifier(FaceImageClassifier):
             (f'Invalid output stage "{stage}", please choose from "backbone", '
              '"neck" and "pre_logits"')
         
-
         x = self.backbone(img, affine_matrix)
+        # x = self.backbone(img, affine_matrix)
 
         if stage == 'backbone':
             return x
@@ -315,15 +315,25 @@ class AffineFaceImageClassifier(FaceImageClassifier):
             b, n, _, _, _ = img.shape
             img = img.flatten(0, 1)
             affine_matrix = affine_matrix[:, None, :, :].expand(b, n, 2, 3).flatten(0, 1)
-            x = self.extract_feat(img, affine_matrix).cpu()
+            results = self.extract_feat(img, affine_matrix)
+            if isinstance(results, list):
+                x = results[-1]
+            else:
+                x = results 
             x = x.reshape(b, n, -1)
         else:
-            x = self.extract_feat(img, affine_matrix).cpu()
+            results = self.extract_feat(img, affine_matrix)
+            if isinstance(results, list):
+                x = results[-1]
+            else:
+                x = results 
+        
         if 'fold' in kwargs.keys() and 'label' in kwargs.keys():
             #print('it have!')  # for debug
             fold, label = kwargs['fold'], kwargs['label']
             fold = fold.cpu()
             label = label.cpu()
+            x = x.cpu()
             output = [dict(feature=x[i][None, ...],
                            fold=fold[i][None, ...],
                            label=label[i][None, ...],
@@ -332,14 +342,23 @@ class AffineFaceImageClassifier(FaceImageClassifier):
             
         elif 'img_metas' in kwargs.keys():
             # print("it have!")
+            pred = self.head.simple_test(results, post_process = False)
+            # print("pred", pred.shape)
+            # print("x", x.shape)
+            # print("pred",pred)
+            x = x.cpu()
+            pred = pred.cpu()
             img_metas = kwargs['img_metas']
             output = [dict(feature=x[i][None, ...],
+                            pred=pred[i][None, ...],
                            img_metas=img_metas[i])
                       for i in range(x.shape[0])]
-        else:
-            # print('it no!') # for debug 
-            output = [dict(feature=x[i][None, ...])
-                      for i in range(x.shape[0])]
 
+            # pred = self.head.simple_test(x)
+            # x = x.cpu()
+            # pred = pred.cpu()
+            # output = [dict(feature=x[i][None, ...],
+            #                pred=pred[i][None, ...])
+            #           for i in range(x.shape[0])]
         return output
 

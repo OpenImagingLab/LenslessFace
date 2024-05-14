@@ -38,7 +38,7 @@ img_norm_cfg = dict(
 
 
 data = dict(
-    workers_per_gpu=2,
+    workers_per_gpu=4,
     train=dict(
         type='Celeb',
         img_prefix='data/celebrity/',
@@ -156,7 +156,7 @@ data = dict(
             dict(type='Collect', keys=['img', 'fold', 'label', 'affine_matrix'])
         ]
         ),
-    train_dataloader=dict(samples_per_gpu=80),
+    train_dataloader=dict(samples_per_gpu=200),
     val_dataloader=dict(samples_per_gpu=16),
     test_dataloader=dict(samples_per_gpu=16))
 custom_hooks = [
@@ -166,15 +166,21 @@ custom_hooks = [
 model = dict(
     type='AffineFaceImageClassifier',
     backbone=dict(
-        type='T2T_ViT_optical',
+        type='ResNet_optical',
         optical=optical,
         apply_affine=True,
-        image_size=240),
+        image_size=240,
+        depth=50,
+        num_stages=4,
+        out_indices=(3, ),
+        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50'),
+        style='pytorch'
+        ),
     neck=dict(
         type='GlobalDepthWiseNeck',
-        in_channels=384,
+        in_channels=2048,
         out_channels=128,
-        kernel_size=(15, 15)),
+        kernel_size=(8, 8)),
     head=dict(
         type='IdentityClsHead',
         loss=dict(type='ArcMargin', out_features=93955)))
@@ -192,3 +198,4 @@ evaluation = dict(interval=1, metric='accuracy')
 # checkpoint_config = dict(interval=1000)
 # evaluation = dict(interval=500,metric='accuracy')
 optimizer_config = dict(grad_clip=dict(max_norm=1, norm_type=2))
+# optimizer_config = None

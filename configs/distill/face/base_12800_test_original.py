@@ -148,12 +148,15 @@ train_pipeline = [
         ]
 val_pipeline = [
             dict(type='LoadImageFromFile'),
+            dict(type='Resize', size=(172, 172)),
+            # dict(type='Pad_celeb', size=(180, 172), padding=(0, 8, 0, 0)),
+            # dict(type='CenterCrop', crop_size=(112, 96)),
             dict(
                 type='Propagated',
                 keys=['img'],
                 mask2sensor=0.002,
                 scene2mask=0.4,
-                object_height=0.27,
+                object_height=0.27 / 112 * 172,
                 sensor='IMX250',
                 single_psf=False,
                 grayscale=False,
@@ -164,7 +167,7 @@ val_pipeline = [
                     angle=(0, 30),
                     scale_factor=0.2,
                     translate=(0.2, 0.2),
-                    prob=1.0,
+                    prob=0.0,
                 ),
             dict(type='Affine2label',),
             # dict(type='AddBackground', img_dir='data/BG-20k/testval',size = (100, 100),is_tensor=True),
@@ -217,14 +220,14 @@ data = dict(
         type='LFW',
             load_pair = False,
             use_flip = False,
-            img_prefix='data/lfw/lfw-112X96',
+            img_prefix='data/lfw/lfw-deepfunneled',
             pair_file='data/lfw/pairs.txt',
         pipeline=val_pipeline),
     test=dict(
         type='LFW',
             load_pair = False,
             use_flip = False,
-            img_prefix='data/lfw/lfw-112X96',
+            img_prefix='data/lfw/lfw-deepfunneled',
             pair_file='data/lfw/pairs.txt',
             pipeline=test_pipeline
    ),

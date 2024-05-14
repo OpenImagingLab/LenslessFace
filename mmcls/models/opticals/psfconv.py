@@ -72,6 +72,11 @@ class AddGaussianNoise:
 
         measurement_after_noise = measurement + self.noise_ratio * gaussian_noise
 
+        # calculate the ratio of the std of the measurement and the std of the noise, and then calculate the SNR
+        ratio = torch.var(measurement) / gaussian_noise_var
+        # snr = 10 * torch.log10(ratio)
+        # print("snr:", snr.mean())
+
         # ratio = torch.std(measurement) / torch.std(measurement_after_noise - measurement)
         # print("--------",torch.std(measurement), torch.std(measurement_after_noise - measurement),ratio,"--------")
 
@@ -471,7 +476,7 @@ class PsfConv(nn.Module):
             return x
         # normalize after PSF 
         x = self.normalize(x)
-        self.after_optical = x.detach()
+        # self.after_optical = x.detach()
         # normalize after PSF
         # x = self.conv_bn(x)
         if self.sensor_activation is not None:

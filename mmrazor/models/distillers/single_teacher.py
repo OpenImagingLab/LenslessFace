@@ -116,6 +116,7 @@ class SingleTeacherDistiller(BaseDistiller):
 
         # Register forward hooks for modules that need to participate in loss
         # calculation.
+        # print(self.student_name2module)
         for component in self.components:
             student_module_name = component['student_module']
             teacher_module_name = component['teacher_module']

@@ -76,6 +76,7 @@ class LinearClsHead(ClsHead):
     def forward_train(self, x, gt_label, **kwargs):
         x = self.pre_logits(x)
         cls_score = self.fc(x)
+    
         losses = self.loss(cls_score, gt_label, **kwargs)
         return losses
 

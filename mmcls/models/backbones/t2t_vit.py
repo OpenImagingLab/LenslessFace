@@ -455,6 +455,7 @@ class T2T_ViT_optical(T2T_ViT):
         super().__init__(image_size, **kwargs)
         self.apply_affine = apply_affine
         self.remove_background = remove_bg
+       
         if optical is not None:
             self.optical = build_optical(optical)
             left = (image_size - self.optical.output_dim[1]) // 2
@@ -464,14 +465,18 @@ class T2T_ViT_optical(T2T_ViT):
             self.padding = (left, right, top, bottom)
         else:
             self.optical = None
+        # print("self.padding", self.padding)
         self.image_size = image_size
         self.show_dir = kwargs.get('show_dir', None)
+        # self.show_dir = "show5"
+        # os.makedirs(self.show_dir, exist_ok = True)
         self.show_index = 0
         # padding input image to (image_size, image_size) 
         # print(self.optical.output_dim)
  
      
     def forward(self, x, affine_matrix = None):
+        # print("remove_background", self.remove_background, x.shape)
         if len(x.shape) == 5:
             if self.remove_background:
                 x = x[:,1]
@@ -486,8 +491,15 @@ class T2T_ViT_optical(T2T_ViT):
             x = F.grid_sample(x, grid)
 
         if self.optical is not None:
-            x = self.optical(x, affine_matrix)
-            x = F.pad(x, self.padding, 'constant', 0)
+            x_after_optical = self.optical(x, affine_matrix)
+            # print(x_after_optical.shape)
+            if self.show_dir is not None:
+                save_path = os.path.join(self.show_dir, str(self.show_index) + '_after_optical.png')
+                save_image(x_after_optical[:16], save_path, nrow = 4, normalize = True)
+
+            # x = F.pad(x_after_optical, self.padding, 'replicate',)
+            x = F.pad(x_after_optical, self.padding, 'constant', 0)
+            # x = F.pad(x_after_optical, self.padding,)
         else:
             x = x
         # print(self.show_dir)

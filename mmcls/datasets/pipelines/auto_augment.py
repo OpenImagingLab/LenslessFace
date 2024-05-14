@@ -13,6 +13,7 @@ import numpy as np
 from ..builder import PIPELINES
 from .compose import Compose
 from mmcv.image.geometric import cv2_interp_codes
+from torchvision.utils import save_image, make_grid
 
 
 # Default hyperparameters for all Ops
@@ -755,7 +756,8 @@ class TorchAffineRTS(object):
                 img_processed = F.grid_sample(
                     img[None, ...], grid, mode='bilinear').squeeze(0)
                 results[key] = img_processed
-
+        # imgs =make_grid(results['img_nopad'],nrow=4)
+        # save_image(imgs, "img.jpg")
         return results
 
     def __repr__(self):
