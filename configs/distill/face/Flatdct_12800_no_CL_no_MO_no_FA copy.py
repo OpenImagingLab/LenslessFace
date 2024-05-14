@@ -1,7 +1,7 @@
 
 teacher_ckpt = "checkpoints/rgb_teacher/epoch_40.pth"
 optical = dict(
-    type='SoftPsfConv',
+    type='FlatDCT',
     feature_size=2.76e-05,
     sensor='IMX250',
     input_shape=[3, 308, 257],
@@ -14,8 +14,8 @@ optical = dict(
     down="resize",
     noise_type="gaussian",
     expected_light_intensity=12800,
-    do_affine = True,
-    # requires_grad_psf = False,
+    # do_affine = True,
+    requires_grad_psf = False,
     binary=True,
     n_psf_mask=1)
 no_optical = dict(
@@ -25,7 +25,7 @@ no_optical = dict(
     input_shape=[3, 308, 257],
     scene2mask=0.4,
     mask2sensor=0.002,
-    target_dim=[240, 200],
+    target_dim=[164, 128],
     do_optical=False,
     requires_grad=True,
     use_stn=False,
@@ -54,17 +54,17 @@ teacher = dict(
         type='T2T_ViT_optical',
         optical=no_optical,
         # apply_affine=True,
-        image_size=240,
+        image_size=168,
         remove_bg=True),
     neck=dict(
         type='GlobalDepthWiseNeck',
         in_channels=384,
         out_channels=128,
-        kernel_size=(15, 15)),
+        kernel_size=(11, 11)),
     head=dict(
         type='IdentityClsHead',
         loss=dict(type='ArcMargin', out_features=93955)),
-    init_cfg=dict(type='Pretrained', checkpoint=teacher_ckpt, map_location='cpu'),
+        init_cfg=dict(type='Pretrained', checkpoint=teacher_ckpt, map_location='cpu'),
 )
 
 algorithm = dict(
@@ -101,10 +101,10 @@ algorithm = dict(
 custom_hooks = [
     dict(type='VisualConvHook'),
     dict(type='VisualAfterOpticalHook'),
-    dict(type='BGUpdaterHook', max_progress=0.2),
-    dict(type='AffineUpdaterHook',max_progress=0.2,
-    apply_translate=True,
-    apply_scale=True),
+    # dict(type='BGUpdaterHook', max_progress=0.2),
+    # dict(type='AffineUpdaterHook',max_progress=0.2,
+    #             apply_translate=True,
+    #             apply_scale=True),
 ]
 
 
@@ -141,7 +141,7 @@ train_pipeline = [
                     translate=(0.2, 0.2),
                     prob=1.0,
                 ),
-            dict(type='AddBackground', img_dir='data/BG-20k/train',size = (100, 100)),
+            dict(type='AddBackground', img_dir='data/BG-20k/train',size = (80, 100)),
             dict(type='ToTensor', keys=['gt_label']),
             dict(type='StackImagePair', keys=['img', 'img_nopad'], out_key='img'),
             dict(type='Collect', keys=['img', 'gt_label', 'affine_matrix'])
@@ -167,7 +167,7 @@ val_pipeline = [
                     prob=1.0,
                 ),
             dict(type='Affine2label',),
-            # dict(type='AddBackground', img_dir='data/BG-20k/testval',size = (100, 100),is_tensor=True),
+            dict(type='AddBackground', img_dir='data/BG-20k/testval',size = (100, 100),is_tensor=True),
             dict(type='Collect', keys=['img', 'affine_matrix','target','target_weight'],meta_keys=['image_file'])
 ]
 test_pipeline = [
@@ -243,7 +243,7 @@ lr_config = dict(
     warmup='linear',
     warmup_iters=10,
     warmup_ratio=1e-6)
-checkpoint_config = dict(interval=10)
+checkpoint_config = dict(interval=1)
 runner = dict(type='EpochBasedRunner', max_epochs=100)
 evaluation = dict(interval=1, metric='accuracy')
 optimizer_config = dict(grad_clip=dict(max_norm=1, norm_type=2))

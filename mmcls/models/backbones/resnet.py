@@ -8,9 +8,12 @@ from mmcv.cnn.bricks import DropPath
 from mmcv.runner import BaseModule
 from mmcv.utils.parrots_wrapper import _BatchNorm
 
-from ..builder import BACKBONES
+from ..builder import BACKBONES, build_optical
 from .base_backbone import BaseBackbone
-
+import torch.nn.functional as F
+import os
+import numpy as np
+from torchvision.utils import save_image
 eps = 1.0e-5
 
 
@@ -629,7 +632,7 @@ class ResNet(BaseBackbone):
                 elif isinstance(m, BasicBlock):
                     constant_init(m.norm2, 0)
 
-    def forward(self, x):
+    def forward(self, x, c = None):
         if self.deep_stem:
             x = self.stem(x)
         else:
@@ -643,7 +646,7 @@ class ResNet(BaseBackbone):
             x = res_layer(x)
             if i in self.out_indices:
                 outs.append(x)
-        return tuple(outs)
+        return tuple(outs)[0]
 
     def train(self, mode=True):
         super(ResNet, self).train(mode)
@@ -654,6 +657,58 @@ class ResNet(BaseBackbone):
                 if isinstance(m, _BatchNorm):
                     m.eval()
 
+@BACKBONES.register_module()
+class ResNet_optical(ResNet):
+    def __init__(self, optical, apply_affine = False, image_size = 256, remove_bg = False,
+    show_dir = None, **kwargs):
+        super().__init__(**kwargs)
+        self.apply_affine = apply_affine
+        self.remove_background = remove_bg
+        if optical is not None:
+            self.optical = build_optical(optical)
+            left = (image_size - self.optical.output_dim[1]) // 2
+            right = image_size - self.optical.output_dim[1] - left
+            top = (image_size - self.optical.output_dim[0]) // 2
+            bottom = image_size - self.optical.output_dim[0] - top
+            self.padding = (left, right, top, bottom)
+        else:
+            self.optical = None
+        self.image_size = image_size
+        self.show_dir = show_dir
+        # self.show_dir = kwargs.get('show_dir', None)
+        # if self.show_dir is not None:
+        #     os.makedirs(self.show_dir, exist_ok = True)
+        self.show_index = 0
+        # padding input image to (image_size, image_size) 
+        # print(self.optical.output_dim)
+ 
+     
+    def forward(self, x, affine_matrix = None):
+        if len(x.shape) == 5:
+            if self.remove_background:
+                x = x[:,1]
+            else:
+                x = x[:,0]
+            x = x.squeeze(1)
+        # visualize x and save it into a file
+        # print(x.shape)
+      
+        if affine_matrix is not None and self.apply_affine:
+            grid = F.affine_grid(affine_matrix, x.size(), align_corners=False)
+            x = F.grid_sample(x, grid)
+
+        if self.optical is not None:
+            x = self.optical(x, affine_matrix)
+            x = F.pad(x, self.padding, 'constant', 0)
+        else:
+            x = x
+        # print(self.show_dir)
+        if self.show_dir is not None:
+            save_path = os.path.join(self.show_dir, str(self.show_index) + '.png')
+            self.show_index += 1
+            save_image(x[:16], save_path, nrow = 4, normalize = True)
+
+        return super().forward(x)
 
 @BACKBONES.register_module()
 class ResNetV1c(ResNet):

@@ -1,7 +1,7 @@
 
 teacher_ckpt = "checkpoints/rgb_teacher/epoch_40.pth"
 optical = dict(
-    type='SoftPsfConv',
+    type='SoftPsfConvDiff',
     feature_size=2.76e-05,
     sensor='IMX250',
     input_shape=[3, 308, 257],
@@ -13,8 +13,9 @@ optical = dict(
     use_stn=False,
     down="resize",
     noise_type="gaussian",
-    expected_light_intensity=12800,
+    expected_light_intensity=12800 * 0.5,
     do_affine = True,
+    load_weight_path="/root/caixin/RawSense/mmrazor/logs/distill/face/base_12800/latest.pth",
     # requires_grad_psf = False,
     binary=True,
     n_psf_mask=1)
@@ -136,7 +137,7 @@ train_pipeline = [
                 output_dim=[308, 257, 3]),
             dict(
                     type='TorchAffineRTS',
-                    angle=(0, 30),
+                    angle=(0, 0),
                     scale_factor=0.2,
                     translate=(0.2, 0.2),
                     prob=1.0,

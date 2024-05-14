@@ -18,7 +18,7 @@ from .repmlp import RepMLPNet
 from .repvgg import RepVGG
 from .res2net import Res2Net
 from .resnest import ResNeSt
-from .resnet import ResNet, ResNetV1c, ResNetV1d
+from .resnet import ResNet, ResNetV1c, ResNetV1d, ResNet_optical
 from .resnet_cifar import ResNet_CIFAR
 from .resnext import ResNeXt
 from .seresnet import SEResNet
@@ -46,5 +46,5 @@ __all__ = [
     'CSPDarkNet', 'CSPResNet', 'CSPResNeXt', 'CSPNet', 'RepMLPNet',
     'PoolFormer', 'DenseNet', 'VAN',  
     'T2T_ViT_optical','ViT_optical',
-    'T2T_ViT_optical_affine_embed','SwinTransformer_optical'
+    'T2T_ViT_optical_affine_embed','SwinTransformer_optical', 'ResNet_optical'
 ]

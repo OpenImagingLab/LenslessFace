@@ -75,6 +75,8 @@ class VisionTransformerClsHead(ClsHead):
     def pre_logits(self, x):
         if isinstance(x, tuple):
             x = x[-1]
+        # for _ in x:
+        #     print(_.shape)
         _, cls_token = x
         if self.hidden_dim is None:
             return cls_token

@@ -50,12 +50,22 @@ student = dict(
         loss=dict(type='ArcMargin', out_features=93955)))
 teacher = dict(
     type = 'mmcls.AffineFaceImageClassifier',
-    backbone=dict(
-        type='T2T_ViT_optical',
-        optical=no_optical,
-        # apply_affine=True,
+       backbone=dict(
+        type='ResNet_optical',
+        optical=optical,
+        apply_affine=True,
         image_size=240,
-        remove_bg=True),
+        depth=50,
+        num_stages=4,
+        out_indices=(3, ),
+        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50'),
+        style='pytorch'
+        ),
+    neck=dict(
+        type='GlobalDepthWiseNeck',
+        in_channels=2048,
+        out_channels=128,
+        kernel_size=(8, 8)),
     neck=dict(
         type='GlobalDepthWiseNeck',
         in_channels=384,
@@ -167,7 +177,7 @@ val_pipeline = [
                     prob=1.0,
                 ),
             dict(type='Affine2label',),
-            # dict(type='AddBackground', img_dir='data/BG-20k/testval',size = (100, 100),is_tensor=True),
+            dict(type='AddBackground', img_dir='data/BG-20k/testval',size = (100, 100),is_tensor=True),
             dict(type='Collect', keys=['img', 'affine_matrix','target','target_weight'],meta_keys=['image_file'])
 ]
 test_pipeline = [

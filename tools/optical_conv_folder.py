@@ -33,6 +33,8 @@ cfg.algorithm.architecture.model.backbone.optical = dict(
 
 cfg.data.val.pipeline = [
             dict(type='LoadImageFromFile'),
+            # dict(type='Resize', size=(172, 172)),
+            # dict(type='CenterCrop', size=(172, 172)),
             dict(
                 type='Propagated',
                 keys=['img'],
@@ -61,8 +63,8 @@ cfg.data.val.pipeline = [
 def optical_conv(source_img_path, cfg, target_dir = "vis_optical_result", index = None):
     source_filename = os.path.basename(source_img_path)
     source_dir = os.path.dirname(source_img_path)
+    # cfg.data.val.pipeline.object_height = 0.4-0.6
     pipeline = Compose(cfg.data.val.pipeline)
-    
     optical = build_optical(cfg.algorithm.architecture.model.backbone.optical)
     source_dict = dict(img_info=dict(filename=source_filename))
     source_dict['img_prefix'] = source_dir
@@ -113,11 +115,11 @@ if __name__ == "__main__":
     # # source_imgs_path = "vis_optical/paper_example"
     # source_imgs_path = "/root/caixin/data/celebrity_single"
     # target_dir = "/root/caixin/data/celebrity_single_optical"
-    # source_imgs_path = "/root/caixin/data/lfw/lfw-deepfunneled-single"
-    # target_dir = "/root/caixin/data/lfw/lfw-deepfunneled-single-optical"
-    source_imgs_path = "/root/caixin/data/lfw/lfw-172X172-single"
+    source_imgs_path = "/root/caixin/data/lfw/lfw-deepfunneled-single"
+    target_dir = "/root/caixin/data/lfw/lfw-deepfunneled-single-optical-random-height"
+    # source_imgs_path = "/root/caixin/data/lfw/lfw-172X172-single"
     
-    target_dir = "/root/caixin/data/lfw/lfw-172x172-single-optical"
+    # target_dir = "/root/caixin/data/lfw/lfw-172x172-single-optical"
     # source_imgs_path = "/root/caixin/data/lfw/lfw-deepfunneled"
     for img in tqdm(os.listdir(source_imgs_path)):
         if img.endswith('.png') or img.endswith('.jpg'):

@@ -52,8 +52,8 @@ class VisualAfterOpticalHook(Hook):
                 before_optical = save_image(before_optical[:self.visual_images,:,:,:],save_path, nrow = 4, normalize = True)
                 after_affine = save_image(after_affine[:self.visual_images,:,:,:],after_affine_save_path, nrow = 4, normalize = True)
             else:
-                after_optical = save_image(after_optical[:1,:,:,:],after_save_path, nrow = 1, normalize = True)
-                before_optical = save_image(before_optical[:1,:,:,:],save_path, nrow = 1, normalize = True)
+                after_optical = save_image(after_optical,after_save_path, nrow = 4, normalize = True)
+                before_optical = save_image(before_optical,save_path, nrow = 4, normalize = True)
             
         
                
