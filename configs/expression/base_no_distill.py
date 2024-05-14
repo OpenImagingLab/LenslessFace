@@ -1,5 +1,4 @@
 import torch
-#test
 teacher_ckpt = "/root/caixin/RawSense/LenslessFace/logs/expression/rgb_teacher/epoch_300.pth"
 optical = dict(
     type='SoftPsfConv',
