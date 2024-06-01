@@ -37,7 +37,6 @@ def single_gpu_test(pose_model, cls_model, data_loader, show = False, out_dir=No
         if 'output_heatmap' in pose_result.keys():
             # transfer output_heatmap (shift) to affine matrix for cls_model
             print(data['affine_matrix'][0])
-            # print(pose_result['output_heatmap'][0])
             data['affine_matrix'] = pose_model.module.shift2affine(pose_result['output_heatmap'], data['img'].shape[-2:])
             print(data['affine_matrix'][0])
             # print(data['img'].shape[-2:])

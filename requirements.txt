@@ -16,12 +16,14 @@ scikit-learn==1.2.2
 scipy==1.9.1
 timm==0.5.4
 lensless==1.0.4
-torch==1.12.1
+torch==2.0.1
 torchaudio==0.12.1
 torchmetrics==0.11.4
-torchvision==0.13.1
+torchvision==0.15.2
 tqdm==4.65.0
 waveprop==0.0.4
-pycsou==1.0.6
 yapf==0.30.0
+torch_dct
+ordered_set
+munkres
 -e .

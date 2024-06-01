@@ -28,7 +28,7 @@ cfg.algorithm.architecture.model.backbone.optical = dict(
     requires_grad_psf = False,
     binary=True,
     # load_psf_path = "/mnt/data/oss_beijing/caixin/psf_square.png",
-    load_psf_path = "/root/caixin/RawSense/mmrazor/vis_optical_result/0_psf.png",
+    load_psf_path = "/mnt/caixin/RawSense/RawSense/mmrazor/vis_optical_result/0_psf.png",
     n_psf_mask=1)
 
 cfg.data.val.pipeline = [
@@ -54,7 +54,7 @@ cfg.data.val.pipeline = [
                     prob=0.0,
                 ),
             dict(type='Affine2label',),
-            # dict(type='AddBackground', img_dir='/mnt/workspace/RawSense/data/BG-20k/testval',size = (100, 100),is_tensor=True),
+            # dict(type='AddBackground', img_dir='/mnt/caixin/RawSense/data/BG-20k/testval',size = (100, 100),is_tensor=True),
             # dict(type='StackImagePair', keys=['img_nopad'], out_key='img'),
             dict(type='Collect', keys=['img', 'affine_matrix','target','target_weight'],meta_keys=['image_file'])
 ]
@@ -113,10 +113,10 @@ if __name__ == "__main__":
     
     # source_imgs_path = "/root/caixin/RawSense/mmrazor/vis_optical/point_source"
     # # source_imgs_path = "vis_optical/paper_example"
-    # source_imgs_path = "/root/caixin/data/celebrity_single"
-    # target_dir = "/root/caixin/data/celebrity_single_optical"
-    source_imgs_path = "/root/caixin/data/lfw/lfw-deepfunneled-single"
-    target_dir = "/root/caixin/data/lfw/lfw-deepfunneled-single-optical-random-height"
+    source_imgs_path = "/mnt/caixin/RawSense/data/celebrity_subset_cropped_single"
+    target_dir = "/mnt/caixin/RawSense/data/celebrity_subset_cropped_single_optical"
+    # source_imgs_path = "/root/caixin/data/lfw/lfw-deepfunneled-single"
+    # target_dir = "/root/caixin/data/lfw/lfw-deepfunneled-single-optical-random-height"
     # source_imgs_path = "/root/caixin/data/lfw/lfw-172X172-single"
     
     # target_dir = "/root/caixin/data/lfw/lfw-172x172-single-optical"

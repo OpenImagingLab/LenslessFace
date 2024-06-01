@@ -1,6 +1,6 @@
 
 _base_ = [
-    '../../_base_/datasets/face/celeb_propagate_test_bg_updater_rotate_scale_shift.py',
+    '../../_base_/datasets/face/celeb_propagate_test_bg_updater_rotate_scale_shift_lfw_original.py',
 ]
 cls_checkpoint = "/mnt/caixin/RawSense/RawSense/mmrazor/logs/distill/face/base_12800/latest.pth"
 pose_checkpoint = "/mnt/caixin/RawSense/RawSense/mmrazor/logs/pose_with_cls_data/base_12800/latest.pth"

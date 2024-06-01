@@ -30,7 +30,7 @@ def restore_original_structure(path_dict_file, target_folder, restore_folder):
 if __name__ == '__main__':
     path_dict_file = "/root/caixin/data/lfw/lfw-112X96-single/path_dict.json"
     target_image_folder = '/root/caixin/data/lfw/lfw-deepfunneled-recon-single'
-    restore_folder = "/mnt/workspace/RawSense/data/lfw/recon"  # The folder to restore the original structure
+    restore_folder = "/mnt/caixin/RawSense/data/lfw/recon"  # The folder to restore the original structure
     os.makedirs(restore_folder, exist_ok=True)
     # path_dict_file = os.path.join(target_folder, path_dict_file)
     restore_original_structure(path_dict_file, target_image_folder, restore_folder)

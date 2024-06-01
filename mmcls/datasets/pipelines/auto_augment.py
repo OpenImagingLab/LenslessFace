@@ -706,8 +706,8 @@ class TorchAffineRTS(object):
         else:
             scale = 1.0
             angle = 0.0
-            translate_x = 0.03
-            translate_y = -0.03
+            translate_x = 0.0
+            translate_y = -0.0
 
         matrix_scale = torch.tensor(
             [[1.0/scale, 0, 0],

@@ -41,7 +41,7 @@ data = dict(
     # timeout=30,
     train=dict(
         type='MXFaceDataset',
-        data_root='/mnt/workspace/RawSense/data/ms1m-retinaface-t1',
+        data_root='/mnt/caixin/RawSense/data/ms1m-retinaface-t1',
         pipeline=[
             # dict(type='LoadImageFromFile'),
             dict(type='CenterCrop', crop_size=(112, 96)),
@@ -71,8 +71,8 @@ data = dict(
         ]),
     val=dict(
         type='LFW',
-        img_prefix='/mnt/workspace/RawSense/data/lfw/lfw-112X96',
-        pair_file='/mnt/workspace/RawSense/data/lfw/pairs.txt',
+        img_prefix='/mnt/caixin/RawSense/data/lfw/lfw-112X96',
+        pair_file='/mnt/caixin/RawSense/data/lfw/pairs.txt',
         pipeline=[
             dict(type='LoadImagePair'),
             dict(
@@ -111,7 +111,7 @@ data = dict(
         ]),
     test=dict(
         type='IJB_C',
-        data_root='/mnt/workspace/RawSense/data/ijb',
+        data_root='/mnt/caixin/RawSense/data/ijb',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(type='CenterCrop', crop_size=(112, 96)),

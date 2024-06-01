@@ -224,8 +224,8 @@ data = dict(
         type='FlatFace',
             load_pair = False,
             use_flip = False,
-            img_prefix='/mnt/workspace/RawSense/data/flatface_aligned',
-            pair_file='/mnt/workspace/RawSense/data/flatface/pairs.txt',
+            img_prefix='/mnt/caixin/RawSense/data/flatface_aligned',
+            pair_file='/mnt/caixin/RawSense/data/flatface/pairs.txt',
             pipeline=test_pipeline
    ),
     train_dataloader=dict(samples_per_gpu=70, persistent_workers=False),
