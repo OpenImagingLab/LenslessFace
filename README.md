@@ -1,4 +1,4 @@
-# LenslessFace : An End-to-End Optimized Lensless System for Privacy-Preserving Face Verification
+# [LenslessFace : An End-to-End Optimized Lensless System for Privacy-Preserving Face Verification](https://openimaginglab.github.io/LenslessFace/)
 
 Code for the paper "An End-to-End Optimized Lensless System for Privacy-Preserving Face Verification".
 
