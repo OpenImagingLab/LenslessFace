@@ -1,7 +1,7 @@
 
 teacher_ckpt = "checkpoints/rgb_teacher/epoch_40.pth"
 optical = dict(
-    type='SoftPsfConvDiff',
+    type='SoftPsfConv',
     feature_size=2.76e-05,
     sensor='IMX250',
     input_shape=[3, 308, 257],
@@ -13,10 +13,11 @@ optical = dict(
     use_stn=False,
     down="resize",
     noise_type="gaussian",
-    expected_light_intensity=12800 * 0.2,
+    expected_light_intensity=12800,
+    # if you don't want to do the face center alignment, set do_affine to False
     do_affine = True,
-    load_weight_path="/root/caixin/RawSense/mmrazor/logs/distill/face/base_12800/latest.pth",
-    # requires_grad_psf = False,
+    # if you don't want to update the psf, set requires_grad_psf to False
+    # requires_grad_psf = False, 
     binary=True,
     n_psf_mask=1)
 no_optical = dict(
@@ -81,6 +82,7 @@ algorithm = dict(
         teacher=teacher,
         teacher_trainable=False,
         teacher_norm_eval=True,
+        # if you want to disable the cross-modal distillation, then you can set the loss_weight to 0
         components=[
             dict(
                 student_module='neck.fc',
@@ -102,6 +104,7 @@ algorithm = dict(
 custom_hooks = [
     dict(type='VisualConvHook'),
     dict(type='VisualAfterOpticalHook'),
+    # if you want to disable the augmentations curriculum, then you can remove the following two hooks
     dict(type='BGUpdaterHook', max_progress=0.2),
     dict(type='AffineUpdaterHook',max_progress=0.2,
     apply_translate=True,
@@ -137,7 +140,7 @@ train_pipeline = [
                 output_dim=[308, 257, 3]),
             dict(
                     type='TorchAffineRTS',
-                    angle=(0, 0),
+                    angle=(0, 30),
                     scale_factor=0.2,
                     translate=(0.2, 0.2),
                     prob=1.0,
@@ -168,41 +171,10 @@ val_pipeline = [
                     prob=1.0,
                 ),
             dict(type='Affine2label',),
-            # dict(type='AddBackground', img_dir='data/BG-20k/testval',size = (100, 100),is_tensor=True),
+            dict(type='AddBackground', img_dir='data/BG-20k/testval',size = (100, 100),is_tensor=True),
             dict(type='Collect', keys=['img', 'affine_matrix','target','target_weight'],meta_keys=['image_file'])
 ]
-test_pipeline = [
-            dict(type='LoadImagePair'),
-            dict(
-                type='FlipPair',
-                keys=['img1', 'img2'],
-                keys_flip=['img1_flip', 'img2_flip']),
-            dict(
-                type='Propagated',
-                keys=['img1', 'img1_flip', 'img2', 'img2_flip'],
-                mask2sensor=0.002,
-                scene2mask=0.4,
-                object_height=0.27,
-                sensor='IMX250',
-                single_psf=False,
-                grayscale=False,
-                input_dim=[112, 96, 3],
-                output_dim=[308, 257, 3]),
-   
-            dict(type="TorchAffineRTS",
-                translate = (0.2,0.2),
-                angle=(0, 0),
-                return_translate=True,
-                scale_factor=0.2,
-                prob=1.0),
-   
-            dict(type='ToTensor', keys=['fold', 'label']),
-            dict(
-                type='StackImagePair',
-                keys=['img1', 'img1_flip', 'img2', 'img2_flip'],
-                out_key='img'),
-            dict(type='Collect', keys=['img', 'fold', 'label', 'affine_matrix'])
-        ]
+
 test_pipeline = val_pipeline
 
 data = dict(
