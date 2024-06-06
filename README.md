@@ -4,11 +4,13 @@ Code for the paper "An End-to-End Optimized Lensless System for Privacy-Preservi
 
 # Get Started
 
-  git clone https://github.com/OpenImagingLab/LenslessFace.git
-  cd LenslessFace
-  conda create -n lenslessface python=3.9
-  conda activate lenslessface
-  pip install -r requirements.txt
+    git clone https://github.com/OpenImagingLab/LenslessFace.git
+    cd LenslessFace
+    conda create -n lenslessface python=3.9
+    conda activate lenslessface
+    pip install -r requirements.txt
+
+
 
 # Data
 For training, we use the [Asian-Celeb](https://drive.google.com/file/d/1xTVBwoeNWiPS-KbH_6OFV32zME45_Z6q/view?usp=sharing) dataset. 
