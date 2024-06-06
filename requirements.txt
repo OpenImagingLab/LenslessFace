@@ -1,11 +1,12 @@
 h5py==3.8.0
+torch==2.0.1
 imageio==2.27.0
+numpy==1.23.5
 imagesize==1.4.1
 imgaug==0.4.0
 mmcv-full==1.6.0
 mmengine==0.7.3
-mmpycocotools==12.0.3
-numpy==1.23.5
+# mmpycocotools==12.0.3
 opencv-contrib-python==4.6.0.66
 opencv-python==4.6.0.66
 opencv-python-headless==4.6.0.66
@@ -16,8 +17,7 @@ scikit-learn==1.2.2
 scipy==1.9.1
 timm==0.5.4
 lensless==1.0.4
-torch==2.0.1
-torchaudio==0.12.1
+# torchaudio==0.12.1
 torchmetrics==0.11.4
 torchvision==0.15.2
 tqdm==4.65.0

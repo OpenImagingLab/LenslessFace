@@ -156,9 +156,9 @@ data = dict(
             dict(type='Collect', keys=['img', 'fold', 'label', 'affine_matrix'])
         ]
         ),
-    train_dataloader=dict(samples_per_gpu=80),
-    val_dataloader=dict(samples_per_gpu=16),
-    test_dataloader=dict(samples_per_gpu=16))
+    train_dataloader=dict(samples_per_gpu=60, persistent_workers=False),
+    val_dataloader=dict(samples_per_gpu=8),
+    test_dataloader=dict(samples_per_gpu=8))
 custom_hooks = [
     dict(type='VisualConvHook'),
     dict(type='VisualAfterOpticalHook')
