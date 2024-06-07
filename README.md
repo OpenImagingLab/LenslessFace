@@ -14,7 +14,7 @@ Code for the paper "An End-to-End Optimized Lensless System for Privacy-Preservi
 
 # Data
 For training, we use the [Asian-Celeb](https://drive.google.com/file/d/1xTVBwoeNWiPS-KbH_6OFV32zME45_Z6q/view?usp=sharing) dataset. 
-Tests are conducted on the [LFW](http://vis-www.cs.umass.edu/lfw/) dataset and [FCFD](https://computationalimaging.rice.edu/databases/flatcam-face-dataset/) dataset.
+Tests are conducted on the [LFW](http://vis-www.cs.umass.edu/lfw/) dataset and [FCFD](https://computationalimaging.rice.edu/databases/flatcam-face-dataset/) dataset
 , which should be downloaded and extracted to the data directory.
 
 You can modify the arguments in `config_file` to change the dataset path.
@@ -26,7 +26,7 @@ For RGB-based teacher model training, run the following command:
 ```
 An example of `config_file` is `configs/face_no_optical/rgb_teacher.py`.
 
-For lenseless-based student model training, run the following command:
+For lensless-based student model training, run the following command:
 ```
 ./scripts/dist_train.sh config_file
 ```
