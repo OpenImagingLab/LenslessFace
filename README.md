@@ -67,12 +67,13 @@ Citation
 Please cite our paper if you find this repository useful for your research:
 
 ```
-@article{your2019paper,
-  title={An End-to-End Optimized Lensless System for Privacy-Preserving Face Verification},
-  author={Your Name and Co-authors},
-  journal={Journal Name},
-  year={Year},
-  publisher={Publisher}
+@misc{cai2024lenslessface,
+      title={LenslessFace: An End-to-End Optimized Lensless System for Privacy-Preserving Face Verification}, 
+      author={Xin Cai and Hailong Zhang and Chenchen Wang and Wentao Liu and Jinwei Gu and Tianfan Xue},
+      year={2024},
+      eprint={2406.04129},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
 }
 ```
 # License
