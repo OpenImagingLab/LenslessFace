@@ -52,7 +52,7 @@ For random face verification, run the following command:
 An example of `config_file` is `configs/hybrid/optical/base_test.py`.
 you need to modify the `cls_checkpoint` and `face_center_detection_checkpoint` in the `config_file`.
 
-Acknowledgments
+# Acknowledgments
 We thank the authors and maintainers of the following repositories for providing the frameworks and datasets that significantly facilitated our research:
 
 * [OpenMMLab](https://github.com/open-mmlab)
