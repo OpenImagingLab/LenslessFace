@@ -5,9 +5,8 @@ import os
 import cv2 as cv
 from torchvision.utils import save_image
 from tqdm import tqdm
-# cfg = Config.fromfile('configs/distill/face/vit2optical_bg_af_updater_rotate_scale_shift_crop_binary_fix.py')
+
 cfg = Config.fromfile('configs/distill/face/base_12800.py')
-cfg.algorithm.architecture.model.backbone.optical.load_weight_path = "logs/distill/face/base_12800/latest.pth"
 cfg.algorithm.architecture.model.backbone.optical.expected_light_intensity = 1
 cfg.algorithm.architecture.model.backbone.optical.type = "SoftPsfConvDiff"
 cfg.algorithm.architecture.model.backbone.optical = dict(
@@ -27,14 +26,11 @@ cfg.algorithm.architecture.model.backbone.optical = dict(
     # do_affine = True,
     requires_grad_psf = False,
     binary=True,
-    # load_psf_path = "/mnt/data/oss_beijing/caixin/psf_square.png",
-    load_psf_path = "/mnt/caixin/RawSense/RawSense/mmrazor/vis_optical_result/0_psf.png",
+    load_psf_path = "final_psf.png",
     n_psf_mask=1)
 
 cfg.data.val.pipeline = [
             dict(type='LoadImageFromFile'),
-            # dict(type='Resize', size=(172, 172)),
-            # dict(type='CenterCrop', size=(172, 172)),
             dict(
                 type='Propagated',
                 keys=['img'],
@@ -44,7 +40,7 @@ cfg.data.val.pipeline = [
                 sensor='IMX250',
                 single_psf=False,
                 grayscale=False,
-                input_dim=[172, 172, 3],
+                input_dim=[96, 112, 3],
                 output_dim=[308, 257, 3]),
             dict(
                     type='TorchAffineRTS',
@@ -54,7 +50,7 @@ cfg.data.val.pipeline = [
                     prob=0.0,
                 ),
             dict(type='Affine2label',),
-            # dict(type='AddBackground', img_dir='/mnt/caixin/RawSense/data/BG-20k/testval',size = (100, 100),is_tensor=True),
+            dict(type='AddBackground', img_dir='/mnt/caixin/RawSense/data/BG-20k/testval',size = (100, 100),is_tensor=True),
             # dict(type='StackImagePair', keys=['img_nopad'], out_key='img'),
             dict(type='Collect', keys=['img', 'affine_matrix','target','target_weight'],meta_keys=['image_file'])
 ]
@@ -69,7 +65,6 @@ def optical_conv(source_img_path, cfg, target_dir = "vis_optical_result", index 
     source_dict = dict(img_info=dict(filename=source_filename))
     source_dict['img_prefix'] = source_dir
     source = pipeline(source_dict)
-    # print(source["img"].device, optical._psf.device)
     optical(source["img"].to(optical._psf.device))
     # visualize the result 
 
@@ -78,8 +73,6 @@ def optical_conv(source_img_path, cfg, target_dir = "vis_optical_result", index 
     after_affine = optical.after_affine
     # create save path
     os.makedirs(target_dir, exist_ok=True)
-    # save the result
-    # print("target_dir", target_dir)
     if index is not None:
         save_psf_path = os.path.join(target_dir, '%s_%d_psf.png'%(source_filename.split('.')[0], index))
         after_optical = save_image(after_optical,
@@ -89,14 +82,7 @@ def optical_conv(source_img_path, cfg, target_dir = "vis_optical_result", index 
         after_optical = save_image(after_optical,
                                 os.path.join(target_dir, '%s.png'%source_filename.split('.')[0]),
                                 normalize = True)
-        # before_optical = save_image(before_optical,os.path.join(target_dir, '%s_before_optical.png'%source_filename.split('.')[0]), normalize = True)
-        # after_affine = save_image(after_affine, os.path.join(target_dir, '%s_after_affine.png'%source_filename.split('.')[0]), normalize = True)
-        # conv_weight = optical._psf.cpu().detach().numpy()
-        # mask = optical.psf_val_to_save.cpu().detach().numpy()
-    #     save_psf_path = os.path.join(target_dir, '%s_psf.png'%source_filename.split('.')[0])
- 
-    # # save_mask_path = os.path.join(target_dir, '%s_mask.png'%source_filename.split('.')[0])
-    # optical.save_psf(save_psf_path)
+
    
 def read_psf(log_path):
     imgs_path = os.path.join(log_path, 'visualizations')
@@ -110,17 +96,9 @@ def read_psf(log_path):
     return psf_list
 
 if __name__ == "__main__":
-    
-    # source_imgs_path = "/root/caixin/RawSense/mmrazor/vis_optical/point_source"
-    # # source_imgs_path = "vis_optical/paper_example"
-    source_imgs_path = "/mnt/caixin/RawSense/data/celebrity_subset_cropped_single"
-    target_dir = "/mnt/caixin/RawSense/data/celebrity_subset_cropped_single_optical"
-    # source_imgs_path = "/root/caixin/data/lfw/lfw-deepfunneled-single"
-    # target_dir = "/root/caixin/data/lfw/lfw-deepfunneled-single-optical-random-height"
-    # source_imgs_path = "/root/caixin/data/lfw/lfw-172X172-single"
-    
-    # target_dir = "/root/caixin/data/lfw/lfw-172x172-single-optical"
-    # source_imgs_path = "/root/caixin/data/lfw/lfw-deepfunneled"
+    source_imgs_path = "data/lfw/lfw-112X96-single"
+    target_dir = "data/lfw/lfw-112X96-single-optical"
+  
     for img in tqdm(os.listdir(source_imgs_path)):
         if img.endswith('.png') or img.endswith('.jpg'):
             source_img_path = os.path.join(source_imgs_path, img)
